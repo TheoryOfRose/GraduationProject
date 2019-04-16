@@ -1,18 +1,23 @@
 #include <iostream>
 #include <string>
-#include <stdio.h>
-#include <stdlib.h>
+#include <map>
+#include <vector>
+
 using namespace std;
 
 class Chess
 {
 
 private:
-    
+   
+   /****************************************************************************
+   *****************************************************************************
+        Member Data
+   *****************************************************************************
+   ****************************************************************************/
     char BLACK = 'b';
     char WHITE = 'w';
-    
-    bool EMPTY = -1;
+    int  EMPTY = -1;
 
     char PAWN = 'p';
     char KNIGHT = 'n';
@@ -25,13 +30,9 @@ private:
     string DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     string POSSIBLE_POSITION[4] = {"1-0", "0-1", "1/2-1/2", "*"};
 
-    // TODO
-    int PAWN_OFFSETS[8] = { -16, -32, -17, -15, 16, 32, 17, 15 };
-    int KNIGHT_OFFSETS[8] = { -18, -33, -31, -14, 18, 33, 31, 14 };
-    int BISHOP_OFFSETS[4] = { -17, -15, 17, -15 };
-    int ROOK_OFFSETS[4] = { -16, -1, 16, 1 };
-    int QUEEN_OFFSETS[8] = { -17, -16, -15, 1, 17, 16, 15, -1 };
-    int KING_OFFSETS[8] = { -17, -16, -15, 1, 17, 16, 15, -1 };
+    // OFFSETS
+    map<char, int[4]> PAWN_OFFSETS;
+    map<char, int[8]> PIECE_OFFSETS;
 
     int ATTACKS[240] = {
         
@@ -74,30 +75,11 @@ private:
     };
 
     // SHIFTS
-    int PAWN_SHIFT = 0;
-    int KNIGHT_SHIFT = 1;
-    int ROOK_SHIFT = 2;
-    int QUEEN_SHIFT = 3;
-    int KING_SHIFT = 4;
-
+    map<char,int> SHIFTS;
     // FLAGS
-    char NORMAL_FLAG = 'n';
-    char CAPTURE_FLAG = 'c';
-    char BIG_PAWN_FLAG = 'b';
-    char EP_CAPTURE_FLAG = 'e';
-    char PROMOTION_FLAG = 'p';
-    char KSIDE_CASTLE_FLAG = 'k';
-    char QSIDE_CASTLE_FLAG = 'q';
-
+    map<string,char> FLAGS;
     // BITS
-    int NORMAL_BIT = 1;
-    int CAPTURE_BIT = 2;
-    int BIG_PAWN_BIT = 3;
-    int EP_CAPTURE_BIT = 8;
-    int PROMOTION_BIT = 16;
-    int KSIDE_CASTLE_BIT = 32;
-    int QSIDE_CASTLE_BIT = 64;
-
+    map<string,int> BITS;
     // RANK
     int RANK_1 = 7;
     int RANK_2 = 6;
@@ -109,84 +91,162 @@ private:
     int RANK_8 = 0;
 
     // SQUARE
-    int SQUARE_a8 = 0;
-    int SQUARE_b8 = 1;
-    int SQUARE_c8 = 2;
-    int SQUARE_d8 = 3;
-    int SQUARE_e8 = 4;
-    int SQUARE_f8 = 5;
-    int SQUARE_g8 = 6;
-    int SQUARE_h8 = 7;
-    int SQUARE_a7 = 16;
-    int SQUARE_b7 = 17;
-    int SQUARE_c7 = 18;
-    int SQUARE_d7 = 19;
-    int SQUARE_e7 = 20;
-    int SQUARE_f7 = 21;
-    int SQUARE_g7 = 22;
-    int SQUARE_h7 = 23;
-    int SQUARE_a6 = 32;
-    int SQUARE_b6 = 33;
-    int SQUARE_c6 = 34;
-    int SQUARE_d6 = 35;
-    int SQUARE_e6 = 36;
-    int SQUARE_f6 = 37;
-    int SQUARE_g6 = 38;
-    int SQUARE_h6 = 39;
-    int SQUARE_a5 = 48;
-    int SQUARE_b5 = 49;
-    int SQUARE_c5 = 50;
-    int SQUARE_d5 = 51;
-    int SQUARE_e5 = 52;
-    int SQUARE_f5 = 53;
-    int SQUARE_g5 = 54;
-    int SQUARE_h5 = 55;
-    int SQUARE_a4 = 64;
-    int SQUARE_b4 = 65;
-    int SQUARE_c4 = 66;
-    int SQUARE_d4 = 67;
-    int SQUARE_e4 = 68;
-    int SQUARE_f4 = 69;
-    int SQUARE_g4 = 70;
-    int SQUARE_h4 = 71;
-    int SQUARE_a3 = 80;
-    int SQUARE_b3 = 81;
-    int SQUARE_c3 = 82;
-    int SQUARE_d3 = 83;
-    int SQUARE_e3 = 84;
-    int SQUARE_f3 = 85;
-    int SQUARE_g3 = 86;
-    int SQUARE_h3 = 87;
-    int SQUARE_a2 = 96;
-    int SQUARE_b2 = 97;
-    int SQUARE_c2 = 98;
-    int SQUARE_d2 = 99;
-    int SQUARE_e2 = 100;
-    int SQUARE_f2 = 101;
-    int SQUARE_g2 = 102;
-    int SQUARE_h2 = 103;
-    int SQUARE_a1 = 112;
-    int SQUARE_b1 = 113;
-    int SQUARE_c1 = 114;
-    int SQUARE_d1 = 115;
-    int SQUARE_e1 = 116;
-    int SQUARE_f1 = 117;
-    int SQUARE_g1 = 118;
-    int SQUARE_h1 = 119;
+    map<string,int> SQUARES;
 
     // ROOKS
-    int ROOKS_W_SQUARE[2] = { SQUARE_a1, SQUARE_h1 };
-    int ROOKS_W_FLAG[2] = { QSIDE_CASTLE_BIT, KSIDE_CASTLE_BIT };
-    int ROOKS_B_SQUARE[2] = { SQUARE_a8, SQUARE_h8 };
-    int ROOKS_B_FLAG[2] = { QSIDE_CASTLE_BIT, KSIDE_CASTLE_BIT };
+    map<char,map<string,int>[2]> ROOKS;
 
-    // TODO var board = new Array(128);
+    // KINGS
+    map<char,int> kings;
+
+    // CASTLING
+    map<char,int> castling;
+    // BOARD
+    map<string,char>* board = new map<string,char>[128];
 
     // ETC
-    // TODO var kings = {w: EMPTY, b: EMPTY};
-    int kings_w;
-    int kings_b;
+    char turn = WHITE;
+    int ep_square = EMPTY;
+    int half_moves = 0;
+    int move_number = 1;
+    
+    // TODO var history = []; var header = {};
+    /****************************************************************************
+     *****************************************************************************
+         Member Function
+     *****************************************************************************
+     ****************************************************************************/
+    void clear();
+    void reset();
+    void load(string fen);
+    bool validate_fen(string fen);
+    string generate_fen();
+    // set_header
+    void update_setup(string fen);
+    map<string,char> get(string square);
+    void put(map<string,char> piece, string square);
+    map<string,char> remove(string square);
+    map<string,string> build_move(map<string,char>* board,string from, string to, int flags, int promotion);
+    //generate_moves()
+    // move_to_san
+    // stripped_san
+    // attacked
+    // king_attacked
+    // in_check
+    // in_checkmate
+    // in_stalemate
+    // insufficient_material
+    // in_threefold_repetition
+    // push
+    // make_move
+    // undo_move
+    // get_disambiguator
+    // ascii
+    // move_from_san
+    int rank(int i);
+    int file(int i);
+    string algebraic(int i);
+    char swap_color(char c);
+    
+
+public:
+
+    Chess();    // Default Constructor
+    Chess(string fen);  // Constructor with fen code
 
 
 };
 
+Chess::Chess(){
+
+    cout<<"Chess Default Constructor"<<endl;
+
+    // OFFSETS
+    PAWN_OFFSETS['b'][0] = 16;PAWN_OFFSETS['b'][1] = 32;
+    PAWN_OFFSETS['b'][2] = 17;PAWN_OFFSETS['b'][3] = 15;
+    PAWN_OFFSETS['w'][0] = -16;PAWN_OFFSETS['w'][1] = -32;
+    PAWN_OFFSETS['w'][2] = -17;PAWN_OFFSETS['w'][3] = -15;
+
+    PIECE_OFFSETS['n'][0]=-18;PIECE_OFFSETS['n'][1]=-33;
+    PIECE_OFFSETS['n'][2]=-31;PIECE_OFFSETS['n'][3]=-14;
+    PIECE_OFFSETS['n'][4]=18;PIECE_OFFSETS['n'][5]=33;
+    PIECE_OFFSETS['n'][6]=31;PIECE_OFFSETS['n'][7]=14;
+    
+    PIECE_OFFSETS['b'][0]=-17;PIECE_OFFSETS['b'][1]=-15;
+    PIECE_OFFSETS['b'][2]=-17;PIECE_OFFSETS['b'][4]=15;
+    
+    PIECE_OFFSETS['r'][0]=-16;PIECE_OFFSETS['r'][1]=1;
+    PIECE_OFFSETS['r'][2]=16;PIECE_OFFSETS['r'][3]=-1;
+    
+    PIECE_OFFSETS['q'][0]=-17;PIECE_OFFSETS['q'][1]=-16;
+    PIECE_OFFSETS['q'][2]=-15;PIECE_OFFSETS['q'][3]=1;
+    PIECE_OFFSETS['q'][4]=17;PIECE_OFFSETS['q'][5]=16;
+    PIECE_OFFSETS['q'][6]=15;PIECE_OFFSETS['q'][7]=-1;
+    
+    PIECE_OFFSETS['k'][0]=-17;PIECE_OFFSETS['k'][1]=-16;
+    PIECE_OFFSETS['k'][2]=-15;PIECE_OFFSETS['k'][3]=1;
+    PIECE_OFFSETS['k'][4]=17;PIECE_OFFSETS['k'][5]=16;
+    PIECE_OFFSETS['k'][6]=15;PIECE_OFFSETS['k'][7]=-1;
+
+    // FLAGS
+    FLAGS["NORMAL"]='n';
+    FLAGS["CAPTURE"]='c';
+    FLAGS["BIG_PAWN"]='b';
+    FLAGS["EP_CAPTURE"]='e';
+    FLAGS["PROMOTION"]='p';
+    FLAGS["KSIDE_CASTLE"]='k';
+    FLAGS["QSIDE_CASTLE"]='q';
+
+    // BITS
+    BITS["NORMAL"]=1;
+    BITS["CAPTURE"]=2;
+    BITS["BIG_PAWN"]=4;
+    BITS["EP_CAPTURE"]=8;
+    BITS["PROMOTION"]=16;
+    BITS["KSIDE_CASTLE"]=32;
+    BITS["QSIDE_CASTLE"]=64;
+
+    // SQUARES
+    SQUARES["a8"] = 0; SQUARES["b8"] = 1; SQUARES["c8"] = 2; SQUARES["d8"] = 3;
+    SQUARES["e8"] = 4; SQUARES["f8"] = 5; SQUARES["g8"] = 6; SQUARES["h8"] = 7;
+    SQUARES["a7"] = 16; SQUARES["b7"] = 17; SQUARES["c7"] = 18; SQUARES["d7"] = 19;
+    SQUARES["e7"] = 20; SQUARES["f7"] = 21; SQUARES["g7"] = 22; SQUARES["h7"] = 23;
+    SQUARES["a6"] = 32; SQUARES["b6"] = 33; SQUARES["c6"] = 34; SQUARES["d6"] = 35;
+    SQUARES["e6"] = 36; SQUARES["f6"] = 37; SQUARES["g6"] = 38; SQUARES["h6"] = 39;
+    SQUARES["a5"] = 48; SQUARES["b5"] = 49; SQUARES["c5"] = 50; SQUARES["d5"] = 51;
+    SQUARES["e5"] = 52; SQUARES["f5"] = 53; SQUARES["g5"] = 54; SQUARES["h5"] = 55;
+    SQUARES["a4"] = 64; SQUARES["b4"] = 65; SQUARES["c4"] = 66; SQUARES["d4"] = 67;
+    SQUARES["e4"] = 68; SQUARES["f4"] = 69; SQUARES["g4"] = 70; SQUARES["h4"] = 71;
+    SQUARES["a3"] = 80; SQUARES["b3"] = 81; SQUARES["c3"] = 82; SQUARES["d3"] = 83;
+    SQUARES["e3"] = 84; SQUARES["f3"] = 85; SQUARES["g3"] = 86; SQUARES["h3"] = 87;
+    SQUARES["a2"] = 96; SQUARES["b2"] = 97; SQUARES["c2"] = 98; SQUARES["d2"] = 99;
+    SQUARES["e2"] =100;SQUARES["f2"] = 101;SQUARES["g2"] = 102;SQUARES["h2"] = 103;
+    SQUARES["a1"] =112;SQUARES["b1"] = 113;SQUARES["c1"] = 114;SQUARES["d1"] = 115;
+    SQUARES["e1"] =116;SQUARES["f1"] = 117;SQUARES["g1"] = 118;SQUARES["h1"] = 119;
+
+    // ROOKS
+    ROOKS['w'][0]["square"] = SQUARES["a1"];
+    ROOKS['w'][0]["flag"] = BITS["QSIDE_CASTLE"];
+    ROOKS['w'][1]["square"] = SQUARES["h1"];
+    ROOKS['w'][1]["flag"] = BITS["KSIDE_CASTLE"];
+    ROOKS['b'][0]["square"] = SQUARES["a8"];
+    ROOKS['b'][0]["flag"] = BITS["QSIDE_CASTLE"];
+    ROOKS['b'][1]["square"] = SQUARES["h8"];
+    ROOKS['b'][1]["flag"] = BITS["KSIDE_CASTLE"];
+    
+    kings['w'] = EMPTY; kings['b'] = EMPTY;
+    castling['w'] = 0; castling['b'] = 0;
+
+    this->clear();
+}
+
+void Chess::clear(){
+    cout<<"aa"<<endl;
+
+}
+
+int main(int argc, char *argv[])
+{
+    Chess* chess = new Chess();
+    return 0;
+}

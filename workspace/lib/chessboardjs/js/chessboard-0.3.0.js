@@ -7,7 +7,7 @@
  *
  * Date: 10 Aug 2013
  */
-
+console.log("compile chessboard.js");
 // start anonymous scope
 ;(function() {
 'use strict';
@@ -17,7 +17,8 @@
 //------------------------------------------------------------------------------
 var COLUMNS = 'abcdefgh'.split('');
 
-/*function validMove(move) {
+function validMove(move) {
+    console.log("Chess Board -validMove");
   // move should be a string
   if (typeof move !== 'string') return false;
 
@@ -29,17 +30,20 @@ var COLUMNS = 'abcdefgh'.split('');
 }
 
 function validSquare(square) {
+    console.log("Chess Board - validSquare");
   if (typeof square !== 'string') return false;
   return (square.search(/^[a-h][1-8]$/) !== -1);
 }
 
 function validPieceCode(code) {
+    console.log("Chess Board - validPieceCode");
   if (typeof code !== 'string') return false;
   return (code.search(/^[bw][KQRNBP]$/) !== -1);
 }
-*/
+
 // TODO: this whole function could probably be replaced with a single regex
 function validFen(fen) {
+    console.log("Chess Board - validFen");
   if (typeof fen !== 'string') return false;
 
   // cut off any move, castling, etc info from the end
@@ -61,8 +65,9 @@ function validFen(fen) {
 
   return true;
 }
-/*
+
 function validPositionObject(pos) {
+    console.log("Chess Board - validPositionObject");
   if (typeof pos !== 'object') return false;
 
   for (var i in pos) {
@@ -74,10 +79,11 @@ function validPositionObject(pos) {
   }
 
   return true;
-}*/
+}
 
 // convert FEN piece code to bP, wK, etc
 function fenToPieceCode(piece) {
+    console.log("Chess Board - fenToPieceCode");
   // black piece
   if (piece.toLowerCase() === piece) {
     return 'b' + piece.toUpperCase();
@@ -89,6 +95,7 @@ function fenToPieceCode(piece) {
 
 // convert bP, wK, etc code to FEN structure
 function pieceCodeToFen(piece) {
+    console.log("Chess Board - pieceCodeToFen");
   var tmp = piece.split('');
 
   // white piece
@@ -103,6 +110,7 @@ function pieceCodeToFen(piece) {
 // convert FEN string to position object
 // returns false if the FEN string is invalid
 function fenToObj(fen) {
+    console.log("Chess Board - fenToObj");
   if (validFen(fen) !== true) {
     return false;
   }
@@ -110,10 +118,8 @@ function fenToObj(fen) {
   // cut off any move, castling, etc info from the end
   // we're only interested in position information
   fen = fen.replace(/ .+$/, '');
-
   var rows = fen.split('/');
   var position = {};
-
   var currentRow = 8;
   for (var i = 0; i < 8; i++) {
     var row = rows[i].split('');
@@ -136,13 +142,13 @@ function fenToObj(fen) {
 
     currentRow--;
   }
-
   return position;
 }
 
 // position object to FEN string
 // returns false if the obj is not a valid position object
 function objToFen(obj) {
+    console.log("Chess Board - objToFen");
   if (validPositionObject(obj) !== true) {
     return false;
   }
@@ -185,9 +191,10 @@ function objToFen(obj) {
   return fen;
 }
 
+console.log("Chess Board Init ");
 window['ChessBoard'] = window['ChessBoard'] || function(containerElOrId, cfg) {
 'use strict';
-
+console.log(cfg);
 cfg = cfg || {};
 
 //------------------------------------------------------------------------------
@@ -256,6 +263,7 @@ var ANIMATION_HAPPENING = false,
 
 // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
 function createId() {
+    console.log("Chess Board - createId");
   return 'xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/x/g, function(c) {
     var r = Math.random() * 16 | 0;
     return r.toString(16);
@@ -263,10 +271,12 @@ function createId() {
 }
 
 function deepCopy(thing) {
+    console.log("Chess Board - deepCopy");
   return JSON.parse(JSON.stringify(thing));
 }
 
 function parseSemVer(version) {
+    console.log("Chess Board - parseSemVer");
   var tmp = version.split('.');
   return {
     major: parseInt(tmp[0], 10),
@@ -277,6 +287,7 @@ function parseSemVer(version) {
 
 // returns true if version is >= minimum
 function compareSemVer(version, minimum) {
+    console.log("Chess Board - compareSemVer");
   version = parseSemVer(version);
   minimum = parseSemVer(minimum);
 
@@ -293,6 +304,7 @@ function compareSemVer(version, minimum) {
 //------------------------------------------------------------------------------
 
 function error(code, msg, obj) {
+    console.log("Chess Board - error");
   // do nothing if showErrors is not set
   if (cfg.hasOwnProperty('showErrors') !== true ||
       cfg.showErrors === false) {
@@ -329,6 +341,7 @@ function error(code, msg, obj) {
 
 // check dependencies
 function checkDeps() {
+    console.log("Chess Board - checkDeps");
   // if containerId is a string, it must be the ID of a DOM node
   if (typeof containerElOrId === 'string') {
     // cannot be empty
@@ -387,20 +400,8 @@ function checkDeps() {
   return true;
 }
 
-function validAnimationSpeed(speed) {
-  if (speed === 'fast' || speed === 'slow') {
-    return true;
-  }
-
-  if ((parseInt(speed, 10) + '') !== (speed + '')) {
-    return false;
-  }
-
-  return (speed >= 0);
-}
-
-// validate config / set default options
 function expandConfig() {
+    console.log("Chess Board - expandConfig");
   if (typeof cfg === 'string' || validPositionObject(cfg) === true) {
     cfg = {
       position: cfg
@@ -489,16 +490,21 @@ function expandConfig() {
   return true;
 }
 
-//------------------------------------------------------------------------------
-// DOM Misc
-//------------------------------------------------------------------------------
+function validAnimationSpeed(speed) {
+    console.log("Chess Board - validAnimationSpeed");
+  if (speed === 'fast' || speed === 'slow') {
+    return true;
+  }
 
-// calculates square size based on the width of the container
-// got a little CSS black magic here, so let me explain:
-// get the width of the container element (could be anything), reduce by 1 for
-// fudge factor, and then keep reducing until we find an exact mod 8 for
-// our square size
+  if ((parseInt(speed, 10) + '') !== (speed + '')) {
+    return false;
+  }
+
+  return (speed >= 0);
+}
+
 function calculateSquareSize() {
+  console.log("Chess Board - calculateSquareSize");
   var containerWidth = parseInt(containerEl.css('width'), 10);
 
   // defensive, prevent infinite loop
@@ -516,8 +522,10 @@ function calculateSquareSize() {
   return (boardWidth / 8);
 }
 
-// create random IDs for elements
+
+// validate config / set default options
 function createElIds() {
+    console.log("Chess Board - createElIds");
   // squares on the board
   for (var i = 0; i < COLUMNS.length; i++) {
     for (var j = 1; j <= 8; j++) {
@@ -541,6 +549,7 @@ function createElIds() {
 //------------------------------------------------------------------------------
 
 function buildBoardContainer() {
+    console.log("Chess Board - buildBoardContainer");
   var html = '<div class="' + CSS.chessboard + '">';
 
   if (cfg.sparePieces === true) {
@@ -577,6 +586,7 @@ var buildSquare = function(color, size, id) {
 */
 
 function buildBoard(orientation) {
+    console.log("Chess Board - buildBoard");
   if (orientation !== 'black') {
     orientation = 'white';
   }
@@ -638,6 +648,7 @@ function buildBoard(orientation) {
 }
 
 function buildPieceImgSrc(piece) {
+    console.log("Chess Board - buildPieceImgSrc");
   if (typeof cfg.pieceTheme === 'function') {
     return cfg.pieceTheme(piece);
   }
@@ -652,6 +663,7 @@ function buildPieceImgSrc(piece) {
 }
 
 function buildPiece(piece, hidden, id) {
+    console.log("Chess Board - buildPiece");
   var html = '<img src="' + buildPieceImgSrc(piece) + '" ';
   if (id && typeof id === 'string') {
     html += 'id="' + id + '" ';
@@ -670,6 +682,7 @@ function buildPiece(piece, hidden, id) {
 }
 
 function buildSparePieces(color) {
+    console.log("Chess Board - buildSquarePieces");
   var pieces = ['wK', 'wQ', 'wR', 'wB', 'wN', 'wP'];
   if (color === 'black') {
     pieces = ['bK', 'bQ', 'bR', 'bB', 'bN', 'bP'];
@@ -688,6 +701,7 @@ function buildSparePieces(color) {
 //------------------------------------------------------------------------------
 
 function animateSquareToSquare(src, dest, piece, completeFn) {
+    console.log("Chess Board - animateSquareToSquare");
   // get information about the source and destination squares
   var srcSquareEl = $('#' + SQUARE_ELS_IDS[src]);
   var srcSquarePosition = srcSquareEl.offset();
@@ -732,6 +746,7 @@ function animateSquareToSquare(src, dest, piece, completeFn) {
 }
 
 function animateSparePieceToSquare(piece, dest, completeFn) {
+    console.log("Chess Board - animateSparePieceToSquare");
   var srcOffset = $('#' + SPARE_PIECE_ELS_IDS[piece]).offset();
   var destSquareEl = $('#' + SQUARE_ELS_IDS[dest]);
   var destOffset = destSquareEl.offset();
@@ -772,6 +787,7 @@ function animateSparePieceToSquare(piece, dest, completeFn) {
 
 // execute an array of animations
 function doAnimations(a, oldPos, newPos) {
+    console.log("Chess Board - doAnimations");
   ANIMATION_HAPPENING = true;
 
   var numFinished = 0;
@@ -821,6 +837,7 @@ function doAnimations(a, oldPos, newPos) {
 
 // returns the distance between two squares
 function squareDistance(s1, s2) {
+    console.log("Chess Board - squareDistance");
   s1 = s1.split('');
   var s1x = COLUMNS.indexOf(s1[0]) + 1;
   var s1y = parseInt(s1[1], 10);
@@ -838,6 +855,7 @@ function squareDistance(s1, s2) {
 
 // returns an array of closest squares from square
 function createRadius(square) {
+    console.log("Chess Board - createRadius");
   var squares = [];
 
   // calculate distance of all squares
@@ -872,6 +890,7 @@ function createRadius(square) {
 // returns the square of the closest instance of piece
 // returns false if no instance of piece is found in position
 function findClosestPiece(position, piece, square) {
+    console.log("Chess Board - findClosestPiece");
   // create array of closest squares from square
   var closestSquares = createRadius(square);
 
@@ -890,6 +909,7 @@ function findClosestPiece(position, piece, square) {
 // calculate an array of animations that need to happen in order to get
 // from pos1 to pos2
 function calculateAnimations(pos1, pos2) {
+    console.log("Chess Board - calculateAnimations");
   // make copies of both
   pos1 = deepCopy(pos1);
   pos2 = deepCopy(pos2);
@@ -964,6 +984,7 @@ function calculateAnimations(pos1, pos2) {
 //------------------------------------------------------------------------------
 
 function drawPositionInstant() {
+    console.log("Chess Board - drawPositionInstant");
   // clear the board
   boardEl.find('.' + CSS.piece).remove();
 
@@ -976,6 +997,7 @@ function drawPositionInstant() {
 }
 
 function drawBoard() {
+    console.log("Chess Board - drawBoard");
   boardEl.html(buildBoard(CURRENT_ORIENTATION));
   drawPositionInstant();
 
@@ -994,6 +1016,7 @@ function drawBoard() {
 // given a position and a set of moves, return a new position
 // with the moves executed
 function calculatePositionFromMoves(position, moves) {
+    console.log("Chess Board - calculatePositionFromMoves");
   position = deepCopy(position);
 
   for (var i in moves) {
@@ -1011,6 +1034,7 @@ function calculatePositionFromMoves(position, moves) {
 }
 
 function setCurrentPosition(position) {
+    console.log("Chess Board - setCurrentPosition");
   var oldPos = deepCopy(CURRENT_POSITION);
   var newPos = deepCopy(position);
   var oldFen = objToFen(oldPos);
@@ -1030,6 +1054,7 @@ function setCurrentPosition(position) {
 }
 
 function isXYOnSquare(x, y) {
+    console.log("Chess Board - isXYOnSquare");
   for (var i in SQUARE_ELS_OFFSETS) {
     if (SQUARE_ELS_OFFSETS.hasOwnProperty(i) !== true) continue;
 
@@ -1045,6 +1070,7 @@ function isXYOnSquare(x, y) {
 
 // records the XY coords of every square into memory
 function captureSquareOffsets() {
+    console.log("Chess Board - captureSquareOffsets");
   SQUARE_ELS_OFFSETS = {};
 
   for (var i in SQUARE_ELS_IDS) {
@@ -1055,11 +1081,13 @@ function captureSquareOffsets() {
 }
 
 function removeSquareHighlights() {
+    console.log("Chess Board - removeSquareHighlights");
   boardEl.find('.' + CSS.square)
     .removeClass(CSS.highlight1 + ' ' + CSS.highlight2);
 }
 
 function snapbackDraggedPiece() {
+    console.log("Chess Board - snapmackDraggedPiece");
   // there is no "snapback" for spare pieces
   if (DRAGGED_PIECE_SOURCE === 'spare') {
     trashDraggedPiece();
@@ -1097,6 +1125,7 @@ function snapbackDraggedPiece() {
 }
 
 function trashDraggedPiece() {
+    console.log("Chess Board - trashDraggedPiece");
   removeSquareHighlights();
 
   // remove the source piece
@@ -1115,6 +1144,7 @@ function trashDraggedPiece() {
 }
 
 function dropDraggedPieceOnSquare(square) {
+    console.log("Chess Board - dropDraggedPieceOnSquare");
   removeSquareHighlights();
 
   // update position
@@ -1150,6 +1180,7 @@ function dropDraggedPieceOnSquare(square) {
 }
 
 function beginDraggingPiece(source, piece, x, y) {
+    console.log("Chess Board - beginDraggingPiece");
   // run their custom onDragStart function
   // their custom onDragStart function can cancel drag start
   if (typeof cfg.onDragStart === 'function' &&
@@ -1191,6 +1222,7 @@ function beginDraggingPiece(source, piece, x, y) {
 }
 
 function updateDraggedPiece(x, y) {
+    console.log("Chess Board - updateDraggedPiece");
   // put the dragged piece over the mouse cursor
   draggedPieceEl.css({
     left: x - (SQUARE_SIZE / 2),
@@ -1226,6 +1258,7 @@ function updateDraggedPiece(x, y) {
 }
 
 function stopDraggedPiece(location) {
+    console.log("Chess Board - stopDraggedPiece");
   // determine what the action should be
   var action = 'drop';
   if (location === 'offboard' && cfg.dropOffBoard === 'snapback') {
@@ -1291,6 +1324,7 @@ function stopDraggedPiece(location) {
 
 // clear the board
 widget.clear = function(useAnimation) {
+    console.log("Chess Board - widget.clear");
   widget.position({}, useAnimation);
 };
 
@@ -1307,6 +1341,7 @@ widget.config = function(arg1, arg2) {
 
 // remove the widget from the page
 widget.destroy = function() {
+    console.log("Chess Board - widget.destroy");
   // remove markup
   containerEl.html('');
   draggedPieceEl.remove();
@@ -1317,11 +1352,13 @@ widget.destroy = function() {
 
 // shorthand method to get the current FEN
 widget.fen = function() {
+    console.log("Chess Board - widget.fen");
   return widget.position('fen');
 };
 
 // flip orientation
 widget.flip = function() {
+    console.log("Chess Board - flip");
   widget.orientation('flip');
 };
 
@@ -1334,6 +1371,7 @@ widget.highlight = function() {
 
 // move pieces
 widget.move = function() {
+    console.log("Chess Board - widget.move");
   // no need to throw an error here; just do nothing
   if (arguments.length === 0) return;
 
@@ -1369,6 +1407,7 @@ widget.move = function() {
 };
 
 widget.orientation = function(arg) {
+    console.log("Chess Board - widget.orientation");
   // no arguments, return the current orientation
   if (arguments.length === 0) {
     return CURRENT_ORIENTATION;
@@ -1392,6 +1431,7 @@ widget.orientation = function(arg) {
 };
 
 widget.position = function(position, useAnimation) {
+    console.log("Chess Board - widget.position");
   // no arguments, return the current position
   if (arguments.length === 0) {
     return deepCopy(CURRENT_POSITION);
@@ -1439,6 +1479,7 @@ widget.position = function(position, useAnimation) {
 };
 
 widget.resize = function() {
+    console.log("Chess Board - widget.resize");
   // calulate the new square size
   SQUARE_SIZE = calculateSquareSize();
 
@@ -1463,6 +1504,7 @@ widget.resize = function() {
 
 // set the starting position
 widget.start = function(useAnimation) {
+    console.log("Chess Board - widget.start");
   widget.position('start', useAnimation);
 };
 
@@ -1471,20 +1513,24 @@ widget.start = function(useAnimation) {
 //------------------------------------------------------------------------------
 
 function isTouchDevice() {
+    console.log("Chess Board - isTouchDevice");
   return ('ontouchstart' in document.documentElement);
 }
 
 // reference: http://www.quirksmode.org/js/detect.html
 function isMSIE() {
+    console.log("Chess Board - isMSIE");
   return (navigator && navigator.userAgent &&
       navigator.userAgent.search(/MSIE/) !== -1);
 }
 
 function stopDefault(e) {
+    console.log("Chess Board - stopDefault");
   e.preventDefault();
 }
 
 function mousedownSquare(e) {
+    console.log("Chess Board - mousedownSquare");
   // do nothing if we're not draggable
   if (cfg.draggable !== true) return;
 
@@ -1500,6 +1546,7 @@ function mousedownSquare(e) {
 }
 
 function touchstartSquare(e) {
+    console.log("Chess Board - touchstartSquare");
   // do nothing if we're not draggable
   if (cfg.draggable !== true) return;
 
@@ -1517,6 +1564,7 @@ function touchstartSquare(e) {
 }
 
 function mousedownSparePiece(e) {
+    console.log("Chess Board - mousedownSparePiece");
   // do nothing if sparePieces is not enabled
   if (cfg.sparePieces !== true) return;
 
@@ -1526,6 +1574,7 @@ function mousedownSparePiece(e) {
 }
 
 function touchstartSparePiece(e) {
+    console.log("Chess Board - touchstartSparePiece");
   // do nothing if sparePieces is not enabled
   if (cfg.sparePieces !== true) return;
 
@@ -1537,6 +1586,7 @@ function touchstartSparePiece(e) {
 }
 
 function mousemoveWindow(e) {
+    console.log("Chess Board - mousemoveWindow");
   // do nothing if we are not dragging a piece
   if (DRAGGING_A_PIECE !== true) return;
 
@@ -1544,6 +1594,7 @@ function mousemoveWindow(e) {
 }
 
 function touchmoveWindow(e) {
+    console.log("Chess Board - touchmoveWindow");
   // do nothing if we are not dragging a piece
   if (DRAGGING_A_PIECE !== true) return;
 
@@ -1555,6 +1606,7 @@ function touchmoveWindow(e) {
 }
 
 function mouseupWindow(e) {
+    console.log("Chess Board - mouseupWindow");
   // do nothing if we are not dragging a piece
   if (DRAGGING_A_PIECE !== true) return;
 
@@ -1565,6 +1617,7 @@ function mouseupWindow(e) {
 }
 
 function touchendWindow(e) {
+    console.log("Chess Board - touchendWindow");
   // do nothing if we are not dragging a piece
   if (DRAGGING_A_PIECE !== true) return;
 
@@ -1576,6 +1629,7 @@ function touchendWindow(e) {
 }
 
 function mouseenterSquare(e) {
+    console.log("Chess Board - mouseenterSquare");
   // do not fire this event if we are dragging a piece
   // NOTE: this should never happen, but it's a safeguard
   if (DRAGGING_A_PIECE !== false) return;
@@ -1601,6 +1655,7 @@ function mouseenterSquare(e) {
 }
 
 function mouseleaveSquare(e) {
+    console.log("Chess Board - mouseleaveSquare");
   // do not fire this event if we are dragging a piece
   // NOTE: this should never happen, but it's a safeguard
   if (DRAGGING_A_PIECE !== false) return;
@@ -1630,6 +1685,7 @@ function mouseleaveSquare(e) {
 //------------------------------------------------------------------------------
 
 function addEvents() {
+    console.log("Chess Board - addEvents");
   // prevent browser "image drag"
   $('body').on('mousedown mousemove', '.' + CSS.piece, stopDefault);
 
@@ -1667,6 +1723,7 @@ function addEvents() {
 }
 
 function initDom() {
+    console.log("Chess Board - initDom");
   // build board and save it in memory
   containerEl.html(buildBoardContainer());
   boardEl = containerEl.find('.' + CSS.board);
@@ -1689,6 +1746,7 @@ function initDom() {
 }
 
 function init() {
+    console.log("Chess Board - init");
   if (checkDeps() !== true ||
       expandConfig() !== true) return;
 

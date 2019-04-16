@@ -1,3 +1,4 @@
+console.log("compile script.js");
 var board,
     game = new Chess();
 

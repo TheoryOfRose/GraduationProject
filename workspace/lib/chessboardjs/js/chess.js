@@ -32,9 +32,9 @@
  * Released under the BSD license
  * https://github.com/jhlywa/chess.js/blob/master/LICENSE
  */
-
+console.log("compile chess.js");
 var Chess = function(fen) {
-
+    console.log("Chess function");
     /* jshint indent: false */
 
     var BLACK = 'b';
@@ -167,12 +167,14 @@ var Chess = function(fen) {
      * starting position
      */
     if (typeof fen === 'undefined') {
+        console.log("default constructor");
         load(DEFAULT_POSITION);
     } else {
         load(fen);
     }
 
     function clear() {
+        console.log("Chess - clear");
         board = new Array(128);
         kings = {w: EMPTY, b: EMPTY};
         turn = WHITE;
@@ -186,11 +188,14 @@ var Chess = function(fen) {
     }
 
     function reset() {
+        console.log("Chess - reset");
         load(DEFAULT_POSITION);
     }
 
     function load(fen) {
+        console.log("Chess - load");
         var tokens = fen.split(/\s+/);
+        console.log(tokens);
         var position = tokens[0];
         var square = 0;
 
@@ -228,13 +233,11 @@ var Chess = function(fen) {
         if (tokens[2].indexOf('q') > -1) {
             castling.b |= BITS.QSIDE_CASTLE;
         }
-
         ep_square = (tokens[3] === '-') ? EMPTY : SQUARES[tokens[3]];
         half_moves = parseInt(tokens[4], 10);
         move_number = parseInt(tokens[5], 10);
 
         update_setup(generate_fen());
-
         return true;
     }
 
@@ -244,6 +247,7 @@ var Chess = function(fen) {
      * we're at it
      */
     function validate_fen(fen) {
+        console.log("Chess - validate_fen");
         var errors = {
             0: 'No errors.',
             1: 'FEN string must contain six space-delimited fields.',
@@ -332,6 +336,7 @@ var Chess = function(fen) {
     }
 
     function generate_fen() {
+        console.log("Chess - generate_fen");
         var empty = 0;
         var fen = '';
 
@@ -369,15 +374,15 @@ var Chess = function(fen) {
         if (castling[WHITE] & BITS.QSIDE_CASTLE) { cflags += 'Q'; }
         if (castling[BLACK] & BITS.KSIDE_CASTLE) { cflags += 'k'; }
         if (castling[BLACK] & BITS.QSIDE_CASTLE) { cflags += 'q'; }
-
+        
         /* do we have an empty castling flag? */
         cflags = cflags || '-';
         var epflags = (ep_square === EMPTY) ? '-' : algebraic(ep_square);
-
         return [fen, turn, cflags, epflags, half_moves, move_number].join(' ');
     }
 
     function set_header(args) {
+        console.log("Chess - set_header");
         for (var i = 0; i < args.length; i += 2) {
             if (typeof args[i] === 'string' &&
                 typeof args[i + 1] === 'string') {
@@ -394,6 +399,7 @@ var Chess = function(fen) {
      * made.
      */
     function update_setup(fen) {
+        console.log("Chess - update_setup");
         if (history.length > 0) return;
 
         if (fen !== DEFAULT_POSITION) {
@@ -406,11 +412,13 @@ var Chess = function(fen) {
     }
 
     function get(square) {
+        console.log("Chess - get");
         var piece = board[SQUARES[square]];
         return (piece) ? {type: piece.type, color: piece.color} : null;
     }
 
     function put(piece, square) {
+        console.log("Chess - put");
         /* check for valid piece object */
         if (!('type' in piece && 'color' in piece)) {
             return false;
@@ -445,6 +453,7 @@ var Chess = function(fen) {
     }
 
     function remove(square) {
+        console.log("Chess - remove");
         var piece = get(square);
         board[SQUARES[square]] = null;
         if (piece && piece.type === KING) {
@@ -457,6 +466,7 @@ var Chess = function(fen) {
     }
 
     function build_move(board, from, to, flags, promotion) {
+        console.log("Chess - build_move");
         var move = {
             color: turn,
             from: from,
@@ -479,6 +489,7 @@ var Chess = function(fen) {
     }
 
     function generate_moves(options) {
+        console.log("Chess - generate_moves");
         function add_move(board, moves, from, to, flags) {
             /* if pawn promotion */
             if (board[from].type === PAWN &&
@@ -641,6 +652,7 @@ var Chess = function(fen) {
      * 4. ... Ne7 is technically the valid SAN
      */
     function move_to_san(move, sloppy) {
+        console.log("Chess - move_to_san");
 
         var output = '';
 
@@ -684,10 +696,12 @@ var Chess = function(fen) {
 
     // parses all of the decorators out of a SAN string
     function stripped_san(move) {
+        console.log("Chess - stripped_san");
         return move.replace(/=/,'').replace(/[+#]?[?!]*$/,'');
     }
 
     function attacked(color, square) {
+        console.log("Chess - attacked");
         for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
             /* did we run off the end of the board */
             if (i & 0x88) { i += 7; continue; }
@@ -729,22 +743,27 @@ var Chess = function(fen) {
     }
 
     function king_attacked(color) {
+        console.log("Chess - king_attacked");
         return attacked(swap_color(color), kings[color]);
     }
 
     function in_check() {
+        console.log("Chess - in_check");
         return king_attacked(turn);
     }
 
     function in_checkmate() {
+        console.log("Chess - in_checkmate");
         return in_check() && generate_moves().length === 0;
     }
 
     function in_stalemate() {
+        console.log("Chess - in_stalemate");
         return !in_check() && generate_moves().length === 0;
     }
 
     function insufficient_material() {
+        console.log("Chess - insufficient_material");
         var pieces = {};
         var bishops = [];
         var num_pieces = 0;
@@ -786,6 +805,7 @@ var Chess = function(fen) {
     }
 
     function in_threefold_repetition() {
+        console.log("Chess - in_threefold_repetition");
         /* TODO: while this function is fine for casual use, a better
          * implementation would use a Zobrist key (instead of FEN). the
          * Zobrist key would be maintained in the make_move/undo_move functions,
@@ -822,6 +842,7 @@ var Chess = function(fen) {
     }
 
     function push(move) {
+        console.log("Chess - push");
         history.push({
             move: move,
             kings: {b: kings.b, w: kings.w},
@@ -834,6 +855,7 @@ var Chess = function(fen) {
     }
 
     function make_move(move) {
+        console.log("Chess - make_move");
         var us = turn;
         var them = swap_color(us);
         push(move);
@@ -925,6 +947,7 @@ var Chess = function(fen) {
     }
 
     function undo_move() {
+        console.log("Chess - undo_move");
         var old = history.pop();
         if (old == null) { return null; }
 
@@ -975,6 +998,7 @@ var Chess = function(fen) {
 
     /* this function is used to uniquely identify ambiguous moves */
     function get_disambiguator(move, sloppy) {
+        console.log("Chess - get_disambiguator");
         var moves = generate_moves({legal: !sloppy});
 
         var from = move.from;
@@ -1029,6 +1053,7 @@ var Chess = function(fen) {
     }
 
     function ascii() {
+        console.log("Chess - ascii");
         var s = '   +------------------------+\n';
         for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
             /* display the rank */
@@ -1060,6 +1085,7 @@ var Chess = function(fen) {
 
     // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
     function move_from_san(move, sloppy) {
+        console.log("Chess - move_from_san");
         // strip off any move decorations: e.g Nf3+?!
         var clean_move = stripped_san(move);
 
@@ -1101,28 +1127,34 @@ var Chess = function(fen) {
      * UTILITY FUNCTIONS
      ****************************************************************************/
     function rank(i) {
+        console.log("Chess - rank");
         return i >> 4;
     }
 
     function file(i) {
+        console.log("Chess - file");
         return i & 15;
     }
 
     function algebraic(i){
+        console.log("Chess - algebraic");
         var f = file(i), r = rank(i);
         return 'abcdefgh'.substring(f,f+1) + '87654321'.substring(r,r+1);
     }
 
     function swap_color(c) {
+        console.log("Chess - swap_color");
         return c === WHITE ? BLACK : WHITE;
     }
 
     function is_digit(c) {
+        console.log("Chess - is_digit");
         return '0123456789'.indexOf(c) !== -1;
     }
 
     /* pretty = external move object */
     function make_pretty(ugly_move) {
+        console.log("Chess - make_pretty");
         var move = clone(ugly_move);
         move.san = move_to_san(move, false);
         move.to = algebraic(move.to);
@@ -1141,6 +1173,7 @@ var Chess = function(fen) {
     }
 
     function clone(obj) {
+        console.log("Chess - clone");
         var dupe = (obj instanceof Array) ? [] : {};
 
         for (var property in obj) {
@@ -1155,6 +1188,7 @@ var Chess = function(fen) {
     }
 
     function trim(str) {
+        console.log("Chess - trim");
         return str.replace(/^\s+|\s+$/g, '');
     }
 
@@ -1162,6 +1196,7 @@ var Chess = function(fen) {
      * DEBUGGING UTILITIES
      ****************************************************************************/
     function perft(depth) {
+        console.log("Chess - perft");
         var moves = generate_moves({legal: false});
         var nodes = 0;
         var color = turn;
@@ -1201,6 +1236,7 @@ var Chess = function(fen) {
              * so: for (var sq in SQUARES) { keys.push(sq); } might not be
              * ordered correctly
              */
+            console.log("Chess Constant - SQUARES");
             var keys = [];
             for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
                 if (i & 0x88) { i += 7; continue; }
@@ -1222,6 +1258,7 @@ var Chess = function(fen) {
         },
 
         moves: function(options) {
+            console.log("Chess API - moves");
             /* The internal representation of a chess move is in 0x88 format, and
              * not meant to be human-readable.  The code below converts the 0x88
              * square coordinates to algebraic coordinates.  It also prunes an
@@ -1248,24 +1285,29 @@ var Chess = function(fen) {
         },
 
         ugly_moves: function(options) {
+            console.log("Chess API - ugly_moves");
             var ugly_moves = generate_moves(options);
             //console.log(ugly_moves);
             return ugly_moves;
         },
 
         in_check: function() {
+            console.log("Chess API - in_check");
             return in_check();
         },
 
         in_checkmate: function() {
+            console.log("Chess API - in_checkmate");
             return in_checkmate();
         },
 
         in_stalemate: function() {
+            console.log("Chess API - in_stalemate");
             return in_stalemate();
         },
 
         in_draw: function() {
+            console.log("Chess API - in_draw");
             return half_moves >= 100 ||
                 in_stalemate() ||
                 insufficient_material() ||
@@ -1273,14 +1315,17 @@ var Chess = function(fen) {
         },
 
         insufficient_material: function() {
+            console.log("Chess API - insufficient_material");
             return insufficient_material();
         },
 
         in_threefold_repetition: function() {
+            console.log("Chess API - in_threefold_repetition");
             return in_threefold_repetition();
         },
 
         game_over: function() {
+            console.log("Chess API - game_over");
             return half_moves >= 100 ||
                 in_checkmate() ||
                 in_stalemate() ||
@@ -1289,14 +1334,17 @@ var Chess = function(fen) {
         },
 
         validate_fen: function(fen) {
+            console.log("Chess API - validate_fen");
             return validate_fen(fen);
         },
 
         fen: function() {
+            console.log("Chess API - fen");
             return generate_fen();
         },
 
         board: function() {
+            console.log("Chess API - board");
             var output = [],
                 row    = [];
 
@@ -1317,6 +1365,7 @@ var Chess = function(fen) {
         },
 
         pgn: function(options) {
+            console.log("Chess API - pgn");
             /* using the specification from http://www.chessclub.com/help/PGN-spec
              * example for html usage: .pgn({ max_width: 72, newline_char: "<br />" })
              */
@@ -1412,16 +1461,19 @@ var Chess = function(fen) {
         },
 
         load_pgn: function(pgn, options) {
+            console.log("Chess API - load_pgn");
             // allow the user to specify the sloppy move parser to work around over
             // disambiguation bugs in Fritz and Chessbase
             var sloppy = (typeof options !== 'undefined' && 'sloppy' in options) ?
                 options.sloppy : false;
 
             function mask(str) {
+                console.log("load_pgn - mask");
                 return str.replace(/\\/g, '\\');
             }
 
             function has_keys(object) {
+                console.log("load_pgn - has_keys");
                 for (var key in object) {
                     return true;
                 }
@@ -1429,6 +1481,7 @@ var Chess = function(fen) {
             }
 
             function parse_pgn_header(header, options) {
+                console.log("load_pgn - parse_pgn_header");
                 var newline_char = (typeof options === 'object' &&
                 typeof options.newline_char === 'string') ?
                     options.newline_char : '\r?\n';
@@ -1539,18 +1592,22 @@ var Chess = function(fen) {
         },
 
         header: function() {
+            console.log("Chess API - header");
             return set_header(arguments);
         },
 
         ascii: function() {
+            console.log("Chess API - ascii");
             return ascii();
         },
 
         turn: function() {
+            console.log("Chess API - turn");
             return turn;
         },
 
         move: function(move, options) {
+            console.log("Chess API - move");
             /* The move function can be called with in the following parameters:
              *
              * .move('Nxb7')      <- where 'move' is a case-sensitive SAN string
@@ -1601,6 +1658,7 @@ var Chess = function(fen) {
         },
 
         ugly_move: function(move_obj, options) {
+            console.log("Chess API - ugly_move");
             var pretty_move = make_pretty(move_obj);
             make_move(move_obj);
 
@@ -1608,31 +1666,38 @@ var Chess = function(fen) {
         },
 
         undo: function() {
+            console.log("Chess API - undo");
             var move = undo_move();
             return (move) ? make_pretty(move) : null;
         },
 
         clear: function() {
+            console.log("Chess API - clear");
             return clear();
         },
 
         put: function(piece, square) {
+            console.log("Chess API - put");
             return put(piece, square);
         },
 
         get: function(square) {
+            console.log("Chess API - get");
             return get(square);
         },
 
         remove: function(square) {
+            console.log("Chess API - remove");
             return remove(square);
         },
 
         perft: function(depth) {
+            console.log("Chess API - perft");
             return perft(depth);
         },
 
         square_color: function(square) {
+            console.log("Chess API - square_color");
             if (square in SQUARES) {
                 var sq_0x88 = SQUARES[square];
                 return ((rank(sq_0x88) + file(sq_0x88)) % 2 === 0) ? 'light' : 'dark';
@@ -1642,6 +1707,7 @@ var Chess = function(fen) {
         },
 
         history: function(options) {
+            console.log("Chess API - history");
             var reversed_history = [];
             var move_history = [];
             var verbose = (typeof options !== 'undefined' && 'verbose' in options &&
