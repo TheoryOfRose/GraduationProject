@@ -2,8 +2,36 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <regex>
+#include <ctype.h>
 
 using namespace std;
+
+vector<string> split(const string& str, const string& delim) {
+    
+    vector<string> tokens;
+    size_t prev = 0, pos = 0;
+    
+    do
+    {
+        pos = str.find(delim, prev);
+        if (pos == string::npos) pos = str.length();
+        string token = str.substr(prev, pos-prev);
+        if (!token.empty()) tokens.push_back(token);
+        prev = pos + delim.length();
+    }
+    while (pos < str.length() && prev < str.length());
+    
+    return tokens;
+}
+
+void print_vector_str(const vector<string>& vec){
+
+   for(int i = 0 ; i < vec.size() ; i++){
+        cout<<vec[i]<<' ';
+   }
+   cout<<endl;
+}
 
 class Chess
 {
@@ -166,7 +194,7 @@ public:
     //insufficient_material
     //in_threefold_repetition
     //game_over
-    //validate_fen
+    bool validate_fen(string fen);
     //fen
     //board
     //pgn
@@ -267,7 +295,7 @@ Chess::Chess(){
     kings['w'] = EMPTY; kings['b'] = EMPTY;
     castling['w'] = 0; castling['b'] = 0;
 
-    //this->clear();
+    this->load(this->DEFAULT_POSITION);
 }
 
 Chess::Chess(string fen){
@@ -349,13 +377,61 @@ Chess::Chess(string fen){
     kings['w'] = EMPTY; kings['b'] = EMPTY;
     castling['w'] = 0; castling['b'] = 0;
 
-    //this->clear();
+    this->load(this->DEFAULT_POSITION);
 
+}
+
+void Chess::load(string fen){
+
+    cout<<"Call Chess->load("<<fen<<")"<<endl; 
+    if(!validate_fen(fen)){ return; }
+    
+    vector<string> tokens = split(fen," ");
+    string position = tokens[0];
+    this->turn = tokens[1].at(0);
+
+    this->clear();
+
+    int sq = 0;
+    for(int i = 0 ; i < position.length() ; i++){
+        char piece = position.at(i);
+        if(piece == '/'){
+            sq += 8;
+        } else if(piece >= '0' && piece <= '9'){
+            sq += (int)piece;
+        }
+        else{
+            char color;
+            if(piece < 'a'){ color = WHITE; }
+            else{ color = BLACK; }
+            //put
+            sq++;
+        }
+    }
+    
+    return;
 
 }
 
 void Chess::clear(){
     cout<<"aa"<<endl;
+
+}
+
+    /****************************************************************************
+     *****************************************************************************
+         Util Function
+     *****************************************************************************
+     ****************************************************************************/
+bool Chess::validate_fen(string fen){
+
+    cout<<"call Chess->validate_fen("<<fen<<")"<<endl;
+    vector<string> tokens = split(fen," ");
+    cout<<"print fen"<<endl;
+    print_vector_str(tokens);
+    if(tokens.size() != 6){ return false; }
+
+    return true;
 
 }
 
