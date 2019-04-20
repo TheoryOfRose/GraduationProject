@@ -1,0 +1,71 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ATTACKS	chess.cpp	/^    int ATTACKS[240] = {$/;"	m	class:Chess	file:
+BISHOP	chess.cpp	/^    char BISHOP = 'b';$/;"	m	class:Chess	file:
+BITS	chess.cpp	/^    map<string,int> BITS;$/;"	m	class:Chess	file:
+BLACK	chess.cpp	/^    char BLACK = 'b';$/;"	m	class:Chess	file:
+Chess	chess.cpp	/^Chess::Chess(){$/;"	f	class:Chess
+Chess	chess.cpp	/^Chess::Chess(string fen){$/;"	f	class:Chess
+Chess	chess.cpp	/^class Chess$/;"	c	file:
+DEFAULT_POSITION	chess.cpp	/^    string DEFAULT_POSITION = "rnbqkbnr\/pppppppp\/8\/8\/8\/8\/PPPPPPPP\/RNBQKBNR w KQkq - 0 1";$/;"	m	class:Chess	file:
+EMPTY	chess.cpp	/^    int  EMPTY = -1;$/;"	m	class:Chess	file:
+FLAGS	chess.cpp	/^    map<string,char> FLAGS; \/\/ Flags$/;"	m	class:Chess	file:
+KING	chess.cpp	/^    char KING = 'k';$/;"	m	class:Chess	file:
+KNIGHT	chess.cpp	/^    char KNIGHT = 'n';$/;"	m	class:Chess	file:
+PAWN	chess.cpp	/^    char PAWN = 'p';$/;"	m	class:Chess	file:
+PAWN_OFFSETS	chess.cpp	/^    map<char, int[4]> PAWN_OFFSETS;$/;"	m	class:Chess	file:
+PIECE_OFFSETS	chess.cpp	/^    map<char, int[8]> PIECE_OFFSETS;$/;"	m	class:Chess	file:
+POSSIBLE_POSITION	chess.cpp	/^    string POSSIBLE_POSITION[4] = {"1-0", "0-1", "1\/2-1\/2", "*"};$/;"	m	class:Chess	file:
+QUEEN	chess.cpp	/^    char QUEEN = 'q';$/;"	m	class:Chess	file:
+RANK_1	chess.cpp	/^    int RANK_1 = 7;$/;"	m	class:Chess	file:
+RANK_2	chess.cpp	/^    int RANK_2 = 6;$/;"	m	class:Chess	file:
+RANK_3	chess.cpp	/^    int RANK_3 = 5;$/;"	m	class:Chess	file:
+RANK_4	chess.cpp	/^    int RANK_4 = 4;$/;"	m	class:Chess	file:
+RANK_5	chess.cpp	/^    int RANK_5 = 3;$/;"	m	class:Chess	file:
+RANK_6	chess.cpp	/^    int RANK_6 = 2;$/;"	m	class:Chess	file:
+RANK_7	chess.cpp	/^    int RANK_7 = 1;$/;"	m	class:Chess	file:
+RANK_8	chess.cpp	/^    int RANK_8 = 0;$/;"	m	class:Chess	file:
+RAYS	chess.cpp	/^    int RAYS[240] = {$/;"	m	class:Chess	file:
+ROOK	chess.cpp	/^    char ROOK = 'r';$/;"	m	class:Chess	file:
+ROOKS	chess.cpp	/^    map<char,map<string,int>[2]> ROOKS;$/;"	m	class:Chess	file:
+SHIFTS	chess.cpp	/^    map<char,int> SHIFTS;$/;"	m	class:Chess	file:
+SYMBOLS	chess.cpp	/^    string SYMBOLS = "pnbrqkPNBRQK";$/;"	m	class:Chess	file:
+WHITE	chess.cpp	/^    char WHITE = 'w';$/;"	m	class:Chess	file:
+algebraic	chess.cpp	/^string Chess::algebraic(int i){$/;"	f	class:Chess
+board	chess.cpp	/^    map<string,char>* board;$/;"	m	class:Chess	file:
+castling	chess.cpp	/^    map<char,int> castling;$/;"	m	class:Chess	file:
+clear	chess.cpp	/^void Chess::clear(){$/;"	f	class:Chess
+code	board.cpp	/^    string code;$/;"	m	struct:position	file:
+ep_square	chess.cpp	/^    int ep_square = EMPTY;$/;"	m	class:Chess	file:
+file	chess.cpp	/^int Chess::file(int i){$/;"	f	class:Chess
+generate_fen	chess.cpp	/^string Chess::generate_fen(){$/;"	f	class:Chess
+half_moves	chess.cpp	/^    int half_moves = 0;$/;"	m	class:Chess	file:
+header	chess.cpp	/^    map<string,string> header;$/;"	m	class:Chess	file:
+history	chess.cpp	/^    vector<string> history;$/;"	m	class:Chess	file:
+kings	chess.cpp	/^    map<char,int> kings;$/;"	m	class:Chess	file:
+load	chess.cpp	/^void Chess::load(string fen){$/;"	f	class:Chess
+mSQUARES	chess.cpp	/^    map<string,int> mSQUARES;$/;"	m	class:Chess	file:
+main	chess.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	script.cpp	/^int main(int argc, char *argv[])$/;"	f
+move_number	chess.cpp	/^    int move_number = 1;$/;"	m	class:Chess	file:
+position	board.cpp	/^struct position            $/;"	s	file:
+print	chess.cpp	/^void Chess::print(){$/;"	f	class:Chess
+print_vector_str	chess.cpp	/^void print_vector_str(const vector<string>& vec){$/;"	f
+put	chess.cpp	/^void Chess::put(char type, char color, string square){$/;"	f	class:Chess
+rank	chess.cpp	/^int Chess::rank(int i){$/;"	f	class:Chess
+reset	chess.cpp	/^void Chess::reset(){$/;"	f	class:Chess
+split	board.cpp	/^vector<string> split(const string& str, const string& delim) {$/;"	f
+split	chess.cpp	/^vector<string> split(const string& str, const string& delim) {$/;"	f
+square	board.cpp	/^    string square;         $/;"	m	struct:position	file:
+turn	chess.cpp	/^    char turn = WHITE;$/;"	m	class:Chess	file:
+update_setup	chess.cpp	/^void Chess::update_setup(string fen){$/;"	f	class:Chess
+validMove	board.cpp	/^bool validMove(string move) {$/;"	f
+validPieceCode	board.cpp	/^bool validPieceCode(string code) {$/;"	f
+validPositionObject	board.cpp	/^bool validPositionObject(vector<position> pos) {$/;"	f
+validSquare	board.cpp	/^bool validSquare(string square) {$/;"	f
+validate_fen	chess.cpp	/^bool Chess::validate_fen(string fen){$/;"	f	class:Chess
+~Chess	chess.cpp	/^Chess::~Chess(){$/;"	f	class:Chess

@@ -238,6 +238,9 @@ var Chess = function(fen) {
         move_number = parseInt(tokens[5], 10);
 
         update_setup(generate_fen());
+        console.log(ROOKS);
+        console.log(kings);
+        console.log(castling);
         return true;
     }
 
@@ -378,6 +381,7 @@ var Chess = function(fen) {
         /* do we have an empty castling flag? */
         cflags = cflags || '-';
         var epflags = (ep_square === EMPTY) ? '-' : algebraic(ep_square);
+        console.log([fen, turn, cflags, epflags, half_moves, move_number].join(' '));
         return [fen, turn, cflags, epflags, half_moves, move_number].join(' ');
     }
 
@@ -389,6 +393,7 @@ var Chess = function(fen) {
                 header[args[i]] = args[i + 1];
             }
         }
+        console.log(header);
         return header;
     }
 
@@ -490,6 +495,8 @@ var Chess = function(fen) {
 
     function generate_moves(options) {
         console.log("Chess - generate_moves");
+        console.log("++++++++++++++++++++++++++++++++++");
+        console.log(options);
         function add_move(board, moves, from, to, flags) {
             /* if pawn promotion */
             if (board[from].type === PAWN &&
@@ -1280,7 +1287,6 @@ var Chess = function(fen) {
                     moves.push(move_to_san(ugly_moves[i], false));
                 }
             }
-
             return moves;
         },
 
